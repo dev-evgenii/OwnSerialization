@@ -1,0 +1,138 @@
+Здравствуйте.
+
+Среда: VisualStudio 2022
+Количество итераций: 10000
+Время выполнения без сериализации: 34 миллисекунд
+Время выполнения c сериализацией: 583 миллисекунд
+Разница во времени: 549 миллисекунд
+Время выполнения c сериализацией и выводом на консоль: 1498 миллисекунд
+
+Время выполнения сериализации в JSON (System.Text.Json;): 90 миллисекунд
+Время выполнения сериализации в CSV: 14 миллисекунд
+Разница во времени: 76 миллисекунд
+
+Время выполнения десериализации: 39 миллисекунд
+
+Общий результат
+Сериализуемый класс:
+
+public class Car
+{
+    public string Color { get; set; }
+
+    public string Name { get; set; }
+
+    public int Price { get; set; }
+
+    public List<Car> GetAll()
+    {
+        return
+        [
+            new Car { Name = "Lada", Color = "White", Price = 100 },
+            new Car { Name = "Kia", Color = "Red", Price = 444 },
+            new Car { Name = "Nissan", Color = "Black", Price = 777 },
+            new Car { Name = "Aurus", Color = "Black", Price = 999 },
+            new Car { Name = "Haval", Color = "Black", Price = 555 }
+        ];        
+    }  
+}  
+
+Код сериализации-десериализации:
+
+public class CsvSerializer<T> where T : class, new()
+{   
+    public string SerializeToString(IList<T> data)
+    {
+        string row;
+        var sb = new StringBuilder();
+
+        var type = typeof(T);        
+        var properties = type.GetProperties();
+
+        foreach (var item in data)
+        {
+            row = string.Empty;
+            foreach (var property in properties)
+            {   
+                if (properties.LastOrDefault() == property) 
+                {
+                    row += $"{property.Name}={property.GetValue(item)}";
+                }
+                else
+                {
+                    row += $"{property.Name}={property.GetValue(item)},";
+                }                
+            }
+            sb.AppendLine(row);
+        }
+
+        return sb.ToString();
+    }
+
+    public IList<T> DeserializeFromString(string data)
+    {
+        var retData = new List<T>();
+
+        if (!string.IsNullOrEmpty(data))
+        {
+            var type = typeof(T);
+            var properties = type.GetProperties();
+            
+            if (properties.Length > 0)
+            {
+                var rows = data.Split(Environment.NewLine);
+                if (rows.Length > 0)
+                {
+                    foreach (var row in rows)
+                    {
+                        var columns = row.Split(',');
+                        if (columns.Length > 0)
+                        {
+                            var t = new T();
+                            foreach (var column in columns)
+                            {
+                                int iValue;
+                                string value;                                
+                                foreach(var property in properties)
+                                {
+                                    if (column.Contains(property.Name))
+                                    {
+                                        if (property.PropertyType == typeof(string))
+                                        {
+                                            value = column.Replace(property.Name, string.Empty).Replace("=", string.Empty).Trim();
+                                            property.SetValue(t, value, null);
+                                        }
+                                        else
+                                        if (property.PropertyType == typeof(int))
+                                        {
+                                            iValue = Convert.ToInt32(column.Replace(property.Name, string.Empty).Replace("=", string.Empty).Trim());
+                                            property.SetValue(t, iValue, null);
+                                        }
+                                    }
+                                }                               
+                            }
+                            retData.Add(t);
+                        }
+                    }
+                }
+            }
+        }
+
+        return retData;
+    }  
+}
+
+количество замеров: 1000 итераций
+
+мой рефлекшен:
+
+Время на сериализацию = 3 мс
+Время на десериализацию = 7 мс
+
+стандартный механизм (System.Text.Json):
+
+Время на сериализацию = 2 мс
+Время на десериализацию = 6 мс
+
+
+

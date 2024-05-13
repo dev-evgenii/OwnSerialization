@@ -1,0 +1,14 @@
+D:\Development\_otus\_HomeWorks\OwnSerialization\obj\Debug\net8.0\OwnSerialization.GeneratedMSBuildEditorConfig.editorconfig
+D:\Development\_otus\_HomeWorks\OwnSerialization\obj\Debug\net8.0\OwnSerialization.AssemblyInfoInputs.cache
+D:\Development\_otus\_HomeWorks\OwnSerialization\obj\Debug\net8.0\OwnSerialization.AssemblyInfo.cs
+D:\Development\_otus\_HomeWorks\OwnSerialization\obj\Debug\net8.0\OwnSerialization.csproj.CoreCompileInputs.cache
+D:\Development\_otus\_HomeWorks\OwnSerialization\bin\Debug\net8.0\OwnSerialization.exe
+D:\Development\_otus\_HomeWorks\OwnSerialization\bin\Debug\net8.0\OwnSerialization.deps.json
+D:\Development\_otus\_HomeWorks\OwnSerialization\bin\Debug\net8.0\OwnSerialization.runtimeconfig.json
+D:\Development\_otus\_HomeWorks\OwnSerialization\bin\Debug\net8.0\OwnSerialization.dll
+D:\Development\_otus\_HomeWorks\OwnSerialization\bin\Debug\net8.0\OwnSerialization.pdb
+D:\Development\_otus\_HomeWorks\OwnSerialization\obj\Debug\net8.0\OwnSerialization.dll
+D:\Development\_otus\_HomeWorks\OwnSerialization\obj\Debug\net8.0\refint\OwnSerialization.dll
+D:\Development\_otus\_HomeWorks\OwnSerialization\obj\Debug\net8.0\OwnSerialization.pdb
+D:\Development\_otus\_HomeWorks\OwnSerialization\obj\Debug\net8.0\OwnSerialization.genruntimeconfig.cache
+D:\Development\_otus\_HomeWorks\OwnSerialization\obj\Debug\net8.0\ref\OwnSerialization.dll
