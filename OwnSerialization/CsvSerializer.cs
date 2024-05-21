@@ -6,33 +6,30 @@ public class CsvSerializer<T> where T : class, new()
 {   
     public string SerializeToString(IList<T> data)
     {
-        string row;
-        var sb = new StringBuilder();
+        var rows = new StringBuilder();        
 
         var type = typeof(T);        
         var properties = type.GetProperties();
 
         foreach (var item in data)
-        {
-            row = string.Empty;
+        {            
             foreach (var property in properties)
             {   
                 if (properties.LastOrDefault() == property) 
                 {
-                    row += $"{property.Name}={property.GetValue(item)}";
+                    rows.AppendLine($"{property.Name}={property.GetValue(item)}");
                 }
                 else
                 {
-                    row += $"{property.Name}={property.GetValue(item)},";
+                    rows.Append($"{property.Name}={property.GetValue(item)},");
                 }                
-            }
-            sb.AppendLine(row);
+            }            
         }
 
-        return sb.ToString();
+        return rows.ToString();
     }
 
-    public IList<T> DeserializeFromString(string data)
+    public IEnumerable<T> DeserializeFromString(string data)
     {
         var retData = new List<T>();
 
@@ -40,44 +37,41 @@ public class CsvSerializer<T> where T : class, new()
         {
             var type = typeof(T);
             var properties = type.GetProperties();
-            
-            if (properties.Length > 0)
+
+            if (properties.Length == 0) return retData;
+
+            var rows = data.Split(Environment.NewLine);
+            if (rows.Length == 0) return retData;
+                       
+            foreach (var row in rows)
             {
-                var rows = data.Split(Environment.NewLine);
-                if (rows.Length > 0)
+                var columns = row.Split(',');
+                if (columns.Length == 0) return retData;
+              
+                var t = new T();
+                foreach (var column in columns)
                 {
-                    foreach (var row in rows)
+                    int iValue;
+                    string value;
+                    foreach (var property in properties)
                     {
-                        var columns = row.Split(',');
-                        if (columns.Length > 0)
+                        if (column.Contains(property.Name))
                         {
-                            var t = new T();
-                            foreach (var column in columns)
+                            if (property.PropertyType == typeof(string))
                             {
-                                int iValue;
-                                string value;                                
-                                foreach(var property in properties)
-                                {
-                                    if (column.Contains(property.Name))
-                                    {
-                                        if (property.PropertyType == typeof(string))
-                                        {
-                                            value = column.Replace(property.Name, string.Empty).Replace("=", string.Empty).Trim();
-                                            property.SetValue(t, value, null);
-                                        }
-                                        else
-                                        if (property.PropertyType == typeof(int))
-                                        {
-                                            iValue = Convert.ToInt32(column.Replace(property.Name, string.Empty).Replace("=", string.Empty).Trim());
-                                            property.SetValue(t, iValue, null);
-                                        }
-                                    }
-                                }                               
+                                value = column.Replace(property.Name, string.Empty).Replace("=", string.Empty).Trim();
+                                property.SetValue(t, value, null);
                             }
-                            retData.Add(t);
+                            else
+                            if (property.PropertyType == typeof(int))
+                            {
+                                iValue = Convert.ToInt32(column.Replace(property.Name, string.Empty).Replace("=", string.Empty).Trim());
+                                property.SetValue(t, iValue, null);
+                            }
                         }
                     }
                 }
+                retData.Add(t);
             }
         }
 
